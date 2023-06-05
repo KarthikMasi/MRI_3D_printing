@@ -31,3 +31,6 @@ Finally, convert the merged VTK file into the STL format by running this command
 python convert_to_STL.py brain.pial.vtk brain.pial.stl
 ```
 Once you've completed these steps, your file should be ready for 3D printing.
+
+
+## To add information about the 2 printers sent my Abbie Weeks and also all the training material that will be received for the same
