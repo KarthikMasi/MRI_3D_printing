@@ -3,7 +3,7 @@ import argparse
 
 def add_hole_to_vtk_model(input_file, output_file, hole_radius):
     # Read the VTK model
-    reader = vtk.vtkPolyDataReader()
+    reader = vtk.vtkUnstructuredGridReader()
     reader.SetFileName(input_file)
     reader.Update()
     vtk_model = reader.GetOutput()
