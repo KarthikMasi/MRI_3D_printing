@@ -17,10 +17,9 @@ def add_hole_to_vtk_model(input_file, output_file, hole_radius):
 
     # Create a cylinder representing the hole
     cylinder = vtk.vtkCylinder()
-    cylinder.SetCenter(hole_center[0], hole_center[1], hole_center[2])
+    cylinder.SetCenter(hole_center[0], hole_center[1], hole_center[2] - hole_radius)
     cylinder.SetRadius(hole_radius)
-    cylinder.SetHeight(0.001)
-    cylinder.SetResolution(30)
+    cylinder.SetAxis(0.0, 0.0, 1.0)
 
     # Create a boolean operation to remove the bottom surface from the hole cylinder
     boolean_operation = vtk.vtkBooleanOperationPolyDataFilter()
