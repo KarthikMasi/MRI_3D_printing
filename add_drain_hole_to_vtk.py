@@ -3,7 +3,7 @@ import argparse
 
 def add_hole_to_vtk_model(input_file, output_file, hole_radius):
     # Read the VTK model
-    reader = vtk.vtkUnstructuredGridReader()
+    reader = vtk.vtkPolyDataReader()
     reader.SetFileName(input_file)
     reader.Update()
     vtk_model = reader.GetOutput()
@@ -15,19 +15,27 @@ def add_hole_to_vtk_model(input_file, output_file, hole_radius):
     # Set the hole center at the bottom of the model
     hole_center = [0.0, 0.0, min_z]
 
-    # Create a cylinder representing the hole
-    cylinder = vtk.vtkCylinder()
-    cylinder.SetCenter(hole_center[0], hole_center[1], hole_center[2] - hole_radius)
-    cylinder.SetRadius(hole_radius)
-    cylinder.SetAxis(0.0, 0.0, 1.0)
+    # Create a sphere representing the hole
+    sphere = vtk.vtkSphereSource()
+    sphere.SetCenter(hole_center)
+    sphere.SetRadius(hole_radius)
+    sphere.SetPhiResolution(30)
+    sphere.SetThetaResolution(30)
 
-    # Create a boolean operation to remove the bottom surface from the hole cylinder
-    boolean_operation = vtk.vtkBooleanOperationPolyDataFilter()
-    boolean_operation.SetOperationToDifference()
-    boolean_operation.SetInputData(0, vtk_model)
-    boolean_operation.SetInputConnection(1, cylinder.GetOutputPort())
-    boolean_operation.Update()
-    modified_model = boolean_operation.GetOutput()
+    # Convert the sphere to an implicit function
+    implicit_sphere = vtk.vtkImplicitFunction()
+    implicit_sphere.SetImplicitFunction(sphere.GetOutput())
+    implicit_sphere.Update()
+
+    # Perform clipping to create the hole at the bottom
+    clipper = vtk.vtkClipPolyData()
+    clipper.SetInputData(vtk_model)
+    clipper.SetClipFunction(implicit_sphere.GetOutputPort())
+    clipper.GenerateClippedOutputOn()
+    clipper.GenerateClipScalarsOff()
+    clipper.GenerateClippedOutputOff()
+    clipper.Update()
+    modified_model = clipper.GetOutput()
 
     # Write the modified VTK model to a file
     writer = vtk.vtkPolyDataWriter()
@@ -45,4 +53,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     add_hole_to_vtk_model(args.input_file, args.output_file, args.hole_radius)
-
