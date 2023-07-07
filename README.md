@@ -44,4 +44,6 @@ Open the STL file in meshlab, click the "Select Faces in a rectangular region".
 
 Hold 'alt' to select only visible region and add a small hole on the surface(preferrably on the bottom). Once your desired region is selected, press "delete".
 
-This is so that the resin has a way to drain for hollow models. Without a hole for draining resin, software on the printer builds a solid model instead of a hollow one 
+This is so that the resin has a way to drain for hollow models. Without a hole for draining resin, software on the printer builds a solid model instead of a hollow one..
+
+Email karthik.ramadass@vanderbilt.edu if you have any questions.
